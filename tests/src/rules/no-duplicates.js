@@ -27,6 +27,16 @@ ruleTester.run('no-duplicates', rule, {
         parser: parsers.ESPREE,
         parserOptions: { ecmaVersion: 'latest' },
       }),
+      test({
+        code: "import { x } from './macro.ts' with { type: 'macro', mode: 'strict' }; import { y } from './macro.ts' with { mode: 'strict', type: 'macro' };",
+        parser: parsers.ESPREE,
+        parserOptions: { ecmaVersion: 'latest' },
+      }),
+      test({
+        code: "import { x } from './macro.ts' with { 'type': 'macro' }; import { y } from './macro.ts' with { 'type': 'json' };",
+        parser: parsers.ESPREE,
+        parserOptions: { ecmaVersion: 'latest' },
+      }),
     ] : [],
 
     test({ code: "import { x } from './foo'; import { y } from './bar'" }),
@@ -61,6 +71,15 @@ ruleTester.run('no-duplicates', rule, {
     }),
   ],
   invalid: [
+    ...semver.satisfies(eslintPkg.version, '>=10') ? [
+      test({
+        code: "import { x } from './macro.ts' with { type: 'macro', mode: 'strict' }; import { y } from './macro.ts' with { mode: 'strict', type: 'macro' };",
+        parser: parsers.ESPREE,
+        parserOptions: { ecmaVersion: 'latest' },
+        errors: ["'./macro.ts' imported multiple times.", "'./macro.ts' imported multiple times."],
+      }),
+    ] : [],
+
     test({
       code: "import { x } from './foo'; import { y } from './foo'",
       output: "import { x,y } from './foo'; ",
