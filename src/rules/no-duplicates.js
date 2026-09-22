@@ -51,8 +51,8 @@ function getImportAttributes(node) {
       ];
     })
     .sort((left, right) => {
-      const leftKey = `${String(left[0])}:${String(left[1])}`;
-      const rightKey = `${String(right[0])}:${String(right[1])}`;
+      const leftKey = JSON.stringify(left);
+      const rightKey = JSON.stringify(right);
       return leftKey < rightKey ? -1 : leftKey > rightKey ? 1 : 0;
     });
 }
