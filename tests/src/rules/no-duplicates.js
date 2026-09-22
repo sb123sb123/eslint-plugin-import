@@ -20,6 +20,15 @@ ruleTester.run('no-duplicates', rule, {
   valid: [
     test({ code: 'import "./malformed.js"' }),
 
+    ...semver.satisfies(eslintPkg.version, '>=10') ? [
+      // #3290: imports with different attributes are different modules.
+      test({
+        code: "import { compile } from './macro.ts' with { type: 'macro' }; import { compile as compileNoMacro } from './macro.ts';",
+        parser: parsers.ESPREE,
+        parserOptions: { ecmaVersion: 'latest' },
+      }),
+    ] : [],
+
     test({ code: "import { x } from './foo'; import { y } from './bar'" }),
 
     // #86: every unresolved module should not show up as 'null' and duplicate
