@@ -28,7 +28,7 @@ ruleTester.run('no-duplicates', rule, {
         parserOptions: { ecmaVersion: 'latest' },
       }),
       test({
-        code: "import { x } from './macro.ts' with { type: 'macro', mode: 'strict' }; import { y } from './macro.ts' with { mode: 'strict', type: 'macro' };",
+        code: "import { x } from './macro.ts' with { type: 'macro', mode: 'strict' }; import { y } from './macro.ts' with { mode: 'strict', type: 'json' };",
         parser: parsers.ESPREE,
         parserOptions: { ecmaVersion: 'latest' },
       }),
@@ -76,6 +76,7 @@ ruleTester.run('no-duplicates', rule, {
         code: "import { x } from './macro.ts' with { type: 'macro', mode: 'strict' }; import { y } from './macro.ts' with { mode: 'strict', type: 'macro' };",
         parser: parsers.ESPREE,
         parserOptions: { ecmaVersion: 'latest' },
+        output: "import { x,y } from './macro.ts' with { type: 'macro', mode: 'strict' }; ",
         errors: ["'./macro.ts' imported multiple times.", "'./macro.ts' imported multiple times."],
       }),
     ] : [],
